@@ -12,9 +12,10 @@ namespace :hipchat do
       :user           => ENV['HIPCHAT_USER'],
       :notify         => ENV['NOTIFY'],
       :room           => ENV['ROOM'],
+      :color          => ENV['COLOR'],
       :token          => ENV['TOKEN']
     }.reject { |k, v| v.blank? }
-    
+
     system_options = {
       :user    => ENV['USER']
     }.reject { |k, v| v.blank? }
@@ -22,7 +23,7 @@ namespace :hipchat do
     if File.exists? config_file
       options.reverse_merge! YAML.load_file(config_file).symbolize_keys
     end
-    
+
     options.reverse_merge! system_options
 
     options[:notify] = options[:notify].to_s != 'false'
@@ -34,6 +35,6 @@ namespace :hipchat do
 
     client = HipChat::Client.new(options[:token])
 
-    client[options[:room]].send(options[:user], options[:message], :notify => options[:notify])
+    client[options[:room]].send(options[:user], options[:message], options)
   end
 end
